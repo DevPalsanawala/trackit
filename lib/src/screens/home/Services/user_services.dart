@@ -33,6 +33,27 @@ class UserServices {
     }
   }
 
+  Future<void> updateBalance(double newBalance) async {
+    try {
+      final userId = _auth.currentUser!.uid;
+
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({"balance": newBalance});
+    } catch (e) {
+      SnackbarHelper.showSnackbar(
+        title: "Error",
+        message: "Failed to update balance.",
+        isError: true,
+      );
+    }
+  }
+}
+
+
+
+
 // By Future
 
   // Future<UserModel?> getUserData() async {
@@ -62,21 +83,3 @@ class UserServices {
   //   }
   //   return null;
   // }
-
-  Future<void> updateBalance(double newBalance) async {
-    try {
-      final userId = _auth.currentUser!.uid;
-
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .update({"balance": newBalance});
-    } catch (e) {
-      SnackbarHelper.showSnackbar(
-        title: "Error",
-        message: "Failed to update balance.",
-        isError: true,
-      );
-    }
-  }
-}
