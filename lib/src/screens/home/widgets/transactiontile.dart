@@ -1,6 +1,7 @@
 import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:trackit/src/comman/formats.dart';
 import 'package:trackit/src/constants/color.dart';
 import 'package:trackit/src/models/transaction_model.dart';
 
@@ -54,7 +55,7 @@ class TransactionTile extends StatelessWidget {
                   width: 20,
                 ),
                 SizedBox(
-                  width: screenwidth * 0.44,
+                  width: screenwidth * 0.36,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -81,14 +82,14 @@ class TransactionTile extends StatelessWidget {
                   width: 8,
                 ),
                 SizedBox(
-                  width: screenwidth * 0.18,
+                  width: screenwidth * 0.26,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AutoSizeText(
                         maxLines: 1,
-                        "${transaction.type == TType.income ? '+' : '-'} ₹${transaction.amount}",
+                        "${transaction.type == TType.income ? '+' : '-'} ₹${formatCurrency(transaction.amount)}",
                         style: theme.textTheme.titleLarge!.copyWith(
                           fontSize: 23,
                           color: transaction.type == TType.income

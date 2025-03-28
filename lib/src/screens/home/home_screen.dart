@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:trackit/src/comman/formats.dart';
 import 'package:trackit/src/constants/color.dart';
 import 'package:trackit/src/controllers/transcation_cottroller.dart';
 import 'package:trackit/src/controllers/user_controller.dart';
@@ -74,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                   isDark: isDark,
                   theme: theme,
                   title: "Total Balance",
-                  value: '₹${balance.toStringAsFixed(2)}',
+                  value: '₹${formatCurrency(balance)}',
                 ),
                 Obx(() {
                   final total =
@@ -87,7 +88,7 @@ class HomeScreen extends StatelessWidget {
                           isDark: isDark,
                           theme: theme,
                           title: "Income",
-                          value: "+₹${total['income']}",
+                          value: "+₹${formatCurrency(total['income'])}",
                           valuecolor: Colors.green,
                         ),
                       ),
@@ -96,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                           isDark: isDark,
                           theme: theme,
                           title: "Expense",
-                          value: "-₹${total['expense']}",
+                          value: "-₹${formatCurrency(total['expense'])}",
                           valuecolor: Colors.redAccent,
                         ),
                       ),
