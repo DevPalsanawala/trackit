@@ -129,63 +129,90 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     }
-                    return ListView.builder(
-                      itemCount: transactions.length,
-                      itemBuilder: (context, index) {
-                        final transaction = transactions[index];
-                        return Dismissible(
-                          key: ValueKey(transaction),
-                          onDismissed: (direction) async {
-                            try {
-                              final amt = double.tryParse(transaction.amount);
-                              if (amt == null) {
-                                SnackbarHelper.showSnackbar(
-                                  title: "Error",
-                                  message: "Invalid transaction amount",
-                                  isError: true,
-                                );
-                                return;
-                              }
-                              final isIncome = transaction.type == TType.income;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 15),
+                          child: Text(
+                            "Recent Transactions",
+                            style: theme.textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 22,
+                            ),
+                          ),
+                        ),
+                        Divider(),
+                        SizedBox(height: 10),
+                        Expanded(
+                          child: ListView.builder(
+                            padding: EdgeInsets.only(bottom: 85),
+                            physics: BouncingScrollPhysics(),
+                            itemCount: transactions.length,
+                            itemBuilder: (context, index) {
+                              final transaction = transactions[index];
+                              return Dismissible(
+                                key: ValueKey(transaction),
+                                onDismissed: (direction) async {
+                                  try {
+                                    final amt =
+                                        double.tryParse(transaction.amount);
+                                    if (amt == null) {
+                                      SnackbarHelper.showSnackbar(
+                                        title: "Error",
+                                        message: "Invalid transaction amount",
+                                        isError: true,
+                                      );
+                                      return;
+                                    }
+                                    final isIncome =
+                                        transaction.type == TType.income;
 
-                              // First delete the transaction
-                              await transcationCottroller
-                                  .deleteTransaction(transaction.id);
+                                    // First delete the transaction
+                                    await transcationCottroller
+                                        .deleteTransaction(transaction.id);
 
-                              // Then update the balance
-                              userController.updateBalance(amt, !isIncome);
-                            } catch (e) {
-                              SnackbarHelper.showSnackbar(
-                                title: "Error",
-                                message: "Failed to delete transaction",
-                                isError: true,
+                                    // Then update the balance
+                                    userController.updateBalance(
+                                        amt, !isIncome);
+                                  } catch (e) {
+                                    SnackbarHelper.showSnackbar(
+                                      title: "Error",
+                                      message: "Failed to delete transaction",
+                                      isError: true,
+                                    );
+                                  }
+                                },
+                                background: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 25),
+                                  height: 50,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Colors.redAccent,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(Icons.delete_outline, size: 30),
+                                      Icon(Icons.delete_outline, size: 30),
+                                    ],
+                                  ),
+                                ),
+                                child: TransactionTile(
+                                  isDark: isDark,
+                                  transaction: transaction,
+                                  screenwidth: screenwidth,
+                                  theme: theme,
+                                ),
                               );
-                            }
-                          },
-                          background: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 25),
-                            height: 50,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.redAccent,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.delete_outline, size: 30),
-                                Icon(Icons.delete_outline, size: 30),
-                              ],
-                            ),
+                            },
                           ),
-                          child: TransactionTile(
-                            isDark: isDark,
-                            transaction: transaction,
-                            screenwidth: screenwidth,
-                            theme: theme,
-                          ),
-                        );
-                      },
+                        ),
+                      ],
                     );
                   }),
                 ),

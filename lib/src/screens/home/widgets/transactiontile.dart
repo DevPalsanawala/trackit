@@ -40,8 +40,8 @@ class TransactionTile extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  height: 60,
-                  width: 60,
+                  height: 50,
+                  width: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: isDark ? Color(0XFF101010) : Color(0xFFF0F0F0),
@@ -55,16 +55,16 @@ class TransactionTile extends StatelessWidget {
                   width: 20,
                 ),
                 SizedBox(
-                  width: screenwidth * 0.36,
+                  width: screenwidth * 0.38,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AutoSizeText(
-                        maxLines: 1,
+                        maxLines: 2,
                         transaction.title,
                         style: theme.textTheme.titleLarge!.copyWith(
-                          fontSize: 22,
+                          fontSize: 21,
                         ),
                       ),
                       const SizedBox(
