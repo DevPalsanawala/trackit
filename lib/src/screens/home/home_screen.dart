@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trackit/src/comman/formats.dart';
 import 'package:trackit/src/constants/color.dart';
 import 'package:trackit/src/controllers/transcation_cottroller.dart';
@@ -155,35 +156,198 @@ class HomeScreen extends StatelessWidget {
                               final transaction = transactions[index];
                               return Dismissible(
                                 key: ValueKey(transaction),
-                                onDismissed: (direction) async {
-                                  try {
-                                    final amt =
-                                        double.tryParse(transaction.amount);
-                                    if (amt == null) {
-                                      SnackbarHelper.showSnackbar(
-                                        title: "Error",
-                                        message: "Invalid transaction amount",
-                                        isError: true,
-                                      );
-                                      return;
-                                    }
-                                    final isIncome =
-                                        transaction.type == TType.income;
+                                confirmDismiss: (direction) async {
+                                  return await showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          title: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.warning_amber_rounded,
+                                                color: Colors.redAccent,
+                                                size: 28,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                "Delete Transaction",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          content: SizedBox(
+                                            width: double.maxFinite,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Are you sure you want to delete this transaction?",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: isDark
+                                                        ? Colors.white70
+                                                        : Colors.grey[600],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 20),
+                                                Container(
+                                                  padding: EdgeInsets.all(12),
+                                                  decoration: BoxDecoration(
+                                                    color: isDark
+                                                        ? Colors.grey[800]
+                                                        : Colors.grey[100],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      _buildInfoRow("Title",
+                                                          transaction.title,
+                                                          isDark: isDark),
+                                                      SizedBox(height: 8),
+                                                      _buildInfoRow(
+                                                        "Amount",
+                                                        "${transaction.type == TType.income ? '+' : '-'}₹${formatCurrency(transaction.amount)}",
+                                                        valueColor: transaction
+                                                                    .type ==
+                                                                TType.income
+                                                            ? Colors.green
+                                                            : Colors.redAccent,
+                                                        isDark: isDark,
+                                                      ),
+                                                      SizedBox(height: 8),
+                                                      _buildInfoRow(
+                                                          "Category",
+                                                          transaction.tag.name
+                                                              .toUpperCase(),
+                                                          isDark: isDark),
+                                                      SizedBox(height: 8),
+                                                      _buildInfoRow(
+                                                        "Date",
+                                                        DateFormat(
+                                                                'dd MMM yyyy')
+                                                            .format(transaction
+                                                                .createdAt),
+                                                        isDark: isDark,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                              child: Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                  color: isDark
+                                                      ? Colors.white70
+                                                      : Colors.grey[600],
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                // Show loading dialog
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible: false,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                    content: Row(
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color: isDark
+                                                              ? dPrimaryColor
+                                                              : dSecondaryColor,
+                                                        ),
+                                                        SizedBox(width: 20),
+                                                        Text(
+                                                            "Deleting transaction..."),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
 
-                                    // First delete the transaction
-                                    await transcationCottroller
-                                        .deleteTransaction(transaction.id);
+                                                try {
+                                                  final amt = double.tryParse(
+                                                      transaction.amount);
+                                                  if (amt == null) {
+                                                    Navigator.pop(
+                                                        context); // Close loading dialog
+                                                    SnackbarHelper.showSnackbar(
+                                                      title: "Error",
+                                                      message:
+                                                          "Invalid transaction amount",
+                                                      isError: true,
+                                                    );
+                                                    return;
+                                                  }
+                                                  final isIncome =
+                                                      transaction.type ==
+                                                          TType.income;
 
-                                    // Then update the balance
-                                    userController.updateBalance(
-                                        amt, !isIncome);
-                                  } catch (e) {
-                                    SnackbarHelper.showSnackbar(
-                                      title: "Error",
-                                      message: "Failed to delete transaction",
-                                      isError: true,
-                                    );
-                                  }
+                                                  await transcationCottroller
+                                                      .deleteTransaction(
+                                                          transaction.id);
+                                                  userController.updateBalance(
+                                                      amt, !isIncome);
+
+                                                  Navigator.pop(
+                                                      context); // Close loading dialog
+                                                  Navigator.pop(context,
+                                                      true); // Close confirmation dialog
+                                                } catch (e) {
+                                                  Navigator.pop(
+                                                      context); // Close loading dialog
+                                                  SnackbarHelper.showSnackbar(
+                                                    title: "Error",
+                                                    message:
+                                                        "Failed to delete transaction",
+                                                    isError: true,
+                                                  );
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.redAccent,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "Delete",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ) ??
+                                      false;
+                                },
+                                onDismissed: (direction) {
+                                  // The transaction is already deleted in the dialog
                                 },
                                 background: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 25),
@@ -230,6 +394,31 @@ class HomeScreen extends StatelessWidget {
           size: 30,
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value,
+      {Color? valueColor, bool isDark = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            color: isDark ? Colors.white70 : Colors.grey[600],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            color: valueColor ?? (isDark ? dPrimaryColor : dSecondaryColor),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }

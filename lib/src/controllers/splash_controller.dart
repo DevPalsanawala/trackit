@@ -10,7 +10,7 @@ class SplashController extends GetxController {
     await Future.delayed(Duration(milliseconds: 1200));
     animate.value = true;
 
-    await Future.delayed(Duration(milliseconds: 5000));
+    await Future.delayed(Duration(milliseconds: 3000));
     Get.off(Streamcheck());
   }
 }

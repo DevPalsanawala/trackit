@@ -19,7 +19,7 @@ class SplashScreen extends StatelessWidget {
       body: Center(
         child: Obx(
           () => AnimatedOpacity(
-            duration: Duration(milliseconds: 3000),
+            duration: Duration(milliseconds: 2000),
             opacity: splashController.animate.value ? 1 : 0,
             child: Text(
               'TrackIt',

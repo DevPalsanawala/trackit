@@ -61,10 +61,10 @@ class TransactionTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AutoSizeText(
-                        maxLines: 2,
+                        maxLines: 1,
                         transaction.title,
                         style: theme.textTheme.titleLarge!.copyWith(
-                          fontSize: 21,
+                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(
@@ -73,7 +73,9 @@ class TransactionTile extends StatelessWidget {
                       AutoSizeText(
                         maxLines: 1,
                         transaction.tag.name.toUpperCase(),
-                        style: theme.textTheme.bodyMedium,
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -91,7 +93,7 @@ class TransactionTile extends StatelessWidget {
                         maxLines: 1,
                         "${transaction.type == TType.income ? '+' : '-'} ₹${formatCurrency(transaction.amount)}",
                         style: theme.textTheme.titleLarge!.copyWith(
-                          fontSize: 23,
+                          fontSize: 20,
                           color: transaction.type == TType.income
                               ? Colors.green
                               : Colors.redAccent,
