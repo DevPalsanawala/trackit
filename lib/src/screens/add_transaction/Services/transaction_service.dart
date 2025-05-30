@@ -71,4 +71,33 @@ class TransactionService {
                 TransactionModel.fromMap({...doc.data(), 'id': doc.id}))
             .toList());
   }
+
+  // Future<void> updateTransaction(
+  //   String transactionId,
+  //   String title,
+  //   String amount,
+  //   String note,
+  //   TType type,
+  //   Tag tag,
+  // ) async {
+  //   try {
+  //     await _firestore.collection('transactions').doc(transactionId).update({
+  //       'title': title,
+  //       'amount': amount,
+  //       'note': note,
+  //       'type': type.name,
+  //       'tag': tag.name,
+  //     });
+  //     SnackbarHelper.showSnackbar(
+  //       title: "Success",
+  //       message: "Transaction updated successfully.",
+  //     );
+  //   } catch (e) {
+  //     SnackbarHelper.showSnackbar(
+  //       title: "Error",
+  //       message: "Failed to update transaction: $e",
+  //       isError: true,
+  //     );
+  //   }
+  // }
 }

@@ -10,8 +10,8 @@ import 'package:trackit/src/models/transaction_model.dart';
 
 class AddTransaction extends StatelessWidget {
   AddTransaction({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TranscationCottroller transcationCottroller =
@@ -171,7 +171,7 @@ class AddTransaction extends StatelessWidget {
                                 .toList(),
                             onChanged: (value) {
                               if (value != null) {
-                                transcationCottroller.setSelectedTag(value);
+                                transcationCottroller.selectedTag(value);
                               }
                             },
                           ),
@@ -223,8 +223,6 @@ class AddTransaction extends StatelessWidget {
                                     final isIncome =
                                         transcationCottroller.selectedType ==
                                             TType.income;
-
-                                    //update Balance
                                     userController.updateBalance(
                                         amt!, isIncome);
                                     Get.back();

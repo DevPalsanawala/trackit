@@ -9,12 +9,24 @@ class TranscationCottroller extends GetxController {
   static TranscationCottroller get instance => Get.find();
   final TransactionService _transactionService = TransactionService();
   final RxBool isLoading = false.obs;
+  final RxBool isInitialized = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) fetchTransaction(userId);
+  }
+
+  // Initialize form fields for editing
+  void initializeForEdit(TransactionModel transaction) {
+    clear(); // Clear any existing data first
+    titlecontroller.text = transaction.title;
+    amountcontroller.text = transaction.amount;
+    notecontroller.text = transaction.note;
+    selectedType.value = transaction.type;
+    selectedTag.value = transaction.tag;
+    isInitialized.value = true;
   }
 
 // handle Dropdown
@@ -37,6 +49,9 @@ class TranscationCottroller extends GetxController {
     titlecontroller.clear();
     amountcontroller.clear();
     notecontroller.clear();
+    selectedType.value = TType.income;
+    selectedTag.value = Tag.food;
+    isInitialized.value = false;
   }
 
   var transactions = <TransactionModel>[].obs;
@@ -83,6 +98,35 @@ class TranscationCottroller extends GetxController {
   Future<void> deleteTransaction(String transactionId) async {
     await _transactionService.deleteTransaction(transactionId);
   }
+
+  // Future<void> updateTransaction(
+  //   String transactionId,
+  //   String title,
+  //   String amount,
+  //   String note,
+  //   transaction.TType type,
+  //   transaction.Tag tag,
+  // ) async {
+  //   try {
+  //     isLoading.value = true;
+  //     await _transactionService.updateTransaction(
+  //       transactionId,
+  //       title,
+  //       amount,
+  //       note,
+  //       type,
+  //       tag,
+  //     );
+  //     // Refresh the transaction list after update
+  //     final userId = FirebaseAuth.instance.currentUser?.uid;
+  //     if (userId != null) {
+  //       fetchTransaction(userId);
+  //     }
+  //     clear(); // Clear the form after successful update
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   Map<String, dynamic> getIncomeAndExpenseTotals() {
     double totalIncome = 0.0;
