@@ -23,7 +23,7 @@ class TrackContainer extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.all(10),
-      height: 110,
+      height: 95,
       width: double.infinity,
       decoration: BoxDecoration(
         color: isDark ? dSecondaryColor : dPrimaryColor,
@@ -49,10 +49,11 @@ class TrackContainer extends StatelessWidget {
         spacing: 8,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          AutoSizeText(
+            maxLines: 1,
             title,
             style: theme.textTheme.titleLarge!.copyWith(
-              fontSize: 17,
+              fontSize: 18,
             ),
           ),
           AutoSizeText(

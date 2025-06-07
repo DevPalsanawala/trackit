@@ -19,15 +19,15 @@ class TranscationCottroller extends GetxController {
   }
 
   // Initialize form fields for editing
-  void initializeForEdit(TransactionModel transaction) {
-    clear(); // Clear any existing data first
-    titlecontroller.text = transaction.title;
-    amountcontroller.text = transaction.amount;
-    notecontroller.text = transaction.note;
-    selectedType.value = transaction.type;
-    selectedTag.value = transaction.tag;
-    isInitialized.value = true;
-  }
+  // void initializeForEdit(TransactionModel transaction) {
+  //   clear(); // Clear any existing data first
+  //   titlecontroller.text = transaction.title;
+  //   amountcontroller.text = transaction.amount;
+  //   notecontroller.text = transaction.note;
+  //   selectedType.value = transaction.type;
+  //   selectedTag.value = transaction.tag;
+  //   isInitialized.value = true;
+  // }
 
 // handle Dropdown
   final selectedType = transaction.TType.income.obs;
@@ -55,6 +55,30 @@ class TranscationCottroller extends GetxController {
   }
 
   var transactions = <TransactionModel>[].obs;
+  final Rx<Tag?> selectedFilterTag = Rx<Tag?>(null);
+
+  // filter transaction
+  List<TransactionModel> get filteredTransactions {
+    if (selectedFilterTag.value == null) {
+      return transactions;
+    }
+    return transactions.where((t) => t.tag == selectedFilterTag.value).toList();
+  }
+
+  void setFilterTag(Tag? tag) {
+    selectedFilterTag.value = tag;
+  }
+
+  // fetch transaction
+  void fetchTransaction(String userId) {
+    _transactionService
+        .getTransactionStream(userId)
+        .listen((fetchedTransactions) {
+      transactions.value = fetchedTransactions;
+      transactions.value = fetchedTransactions
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    });
+  }
 
   Future<void> addTransaction(
       String title, String amount, String note, String userid) async {
@@ -85,15 +109,6 @@ class TranscationCottroller extends GetxController {
   //   transactions.value = fetchedTransactions
   //     ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   // }
-  void fetchTransaction(String userId) {
-    _transactionService
-        .getTransactionStream(userId)
-        .listen((fetchedTransactions) {
-      transactions.value = fetchedTransactions;
-      transactions.value = fetchedTransactions
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    });
-  }
 
   Future<void> deleteTransaction(String transactionId) async {
     await _transactionService.deleteTransaction(transactionId);
