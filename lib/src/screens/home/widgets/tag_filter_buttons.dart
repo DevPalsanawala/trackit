@@ -68,6 +68,7 @@ class FilterButton extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(
           icon,
+          size: 22,
           color: isSelected
               ? (isDark ? dSecondaryColor : dPrimaryColor)
               : (isDark ? dPrimaryColor : dSecondaryColor),
